@@ -1,0 +1,22 @@
+version: '3.4'
+
+x-common-config: &common-cfg
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: "200k"
+      max-file: "5"
+      mode: "non-blocking"
+      max-buffer-size: "8m"
+
+
+services:
+  site:
+    <<: *common-cfg
+    image: melopt/nginx-alt
+
+  cloudflared:
+    <<: *common-cfg
+    image: melopt/cloudflared
+    command: ["tunnel", "--url", "http://site/"]
